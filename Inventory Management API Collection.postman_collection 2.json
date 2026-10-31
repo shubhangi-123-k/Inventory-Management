@@ -1,0 +1,2995 @@
+{
+  "info": {
+    "name": "Inventory Management API Collection",
+    "description": "Complete Postman collection for the Inventory Management System backend API.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsInJvbGUiOiJTVVBFUl9BRE1JTiIsImlhdCI6MTc5MTg3NzY4MywiZXhwIjoxNzk0NDY5NjgzfQ.j2YKKxI5_qNeKpH5DFzofOehPNrbzm-qK_iEsTAAHfU",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{authToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "1. Authentication & Setup",
+      "auth": {
+        "type": "noauth"
+      },
+      "item": [
+        {
+          "name": "Setup Super Admin (Unprotected)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Super Admin\",\n  \"email\": \"admin@inventory.com\",\n  \"password\": \"Admin@123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/setup-superadmin",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "setup-superadmin"
+              ]
+            },
+            "description": "Creates initial Super Admin user without needing an existing token."
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();",
+                  "if (response.token) {",
+                  "    pm.collectionVariables.set('authToken', response.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@inventory.com\",\n  \"password\": \"Admin@123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Logs in the user and returns JWT token."
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            },
+            "description": "Logs out the current session."
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. User Management (SUPER_ADMIN)",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Store Manager\",\n  \"email\": \"manager@inventory.com\",\n  \"password\": \"Manager@123\",\n  \"role\": \"ADMIN\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Store Senior Manager\",\n  \"role\": \"ADMIN\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update User Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Inactive\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/1/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "1",
+                "status"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"newPassword\": \"NewSecretPass123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/1/reset-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "1",
+                "reset-password"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Products",
+      "item": [
+        {
+          "name": "Get Products (with Filters)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/products?search=&group_id=&status=Active&is_occasion_based=&occasion_type=&occasion_id=&templates_only=&variants_only=&parent_product_id=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": ""
+                },
+                {
+                  "key": "group_id",
+                  "value": ""
+                },
+                {
+                  "key": "status",
+                  "value": "Active"
+                },
+                {
+                  "key": "is_occasion_based",
+                  "value": ""
+                },
+                {
+                  "key": "occasion_type",
+                  "value": ""
+                },
+                {
+                  "key": "occasion_id",
+                  "value": ""
+                },
+                {
+                  "key": "templates_only",
+                  "value": "",
+                  "description": "Set 'true' to list only parent templates"
+                },
+                {
+                  "key": "variants_only",
+                  "value": "",
+                  "description": "Set 'true' to list flat table of all variants"
+                },
+                {
+                  "key": "parent_product_id",
+                  "value": "",
+                  "description": "Filter variants under specific template ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Product By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/products/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "products",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Product With Attributes & Commercial Fields",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product_name\": \"Silk Traditional Saree\",\n  \"product_alias\": \"Silk Saree Maroon\",\n  \"selling_bill_name\": \"Kanjivaram Silk Saree Maroon Spl\",\n  \"sku\": \"SKU-SILK-001\",\n  \"internal_sku\": \"INT-001\",\n  \"brand_id\": 1,\n  \"group_id\": 1,\n  \"short_description\": \"Premium woven festive pure silk saree\",\n  \"purchase_price\": 2500,\n  \"selling_price\": 4500,\n  \"mrp\": 5999,\n  \"purchase_quantity\": 150,\n  \"lot_number\": \"LOT-2026-A\",\n  \"batch_number\": \"BATCH-994\",\n  \"manufacturing_date\": \"2026-01-15\",\n  \"expiry_date\": \"2029-01-15\",\n  \"best_before_date\": \"2028-12-31\",\n  \"currency\": \"INR\",\n  \"gst_rate\": 5,\n  \"reorder_level\": 20,\n  \"reorder_note\": \"Restock when below 20 pieces\",\n  \"gtin_ean_upc\": \"8901234567890\",\n  \"barcode_image_url\": \"https://example.com/barcode.png\",\n  \"item_type\": \"Goods\",\n  \"status\": \"Active\",\n  \"physical_appearance\": \"Folded Box Pack\",\n  \"size\": \"Standard 6.3m\",\n  \"packaging\": \"Box\",\n  \"length\": 6.3,\n  \"breadth\": 1.15,\n  \"thickness\": 0.05,\n  \"volume\": 0,\n  \"net_weight\": 0.85,\n  \"gross_weight\": 1.1,\n  \"image_url\": \"https://example.com/saree1.jpg\",\n  \"images\": [\n    \"https://example.com/saree1.jpg\",\n    \"https://example.com/saree2.jpg\"\n  ],\n  \"video_url\": \"https://example.com/video.mp4\",\n  \"brochure_url\": \"https://bugbattlers-s3.s3.ap-south-1.amazonaws.com/product-brochures/silk-saree-catalogue.pdf\",\n  \"default_warehouse_id\": 1,\n  \"warehouse_allocations\": [\n    {\n      \"warehouse_id\": 1,\n      \"is_primary\": true,\n      \"opening_stock\": 100,\n      \"opening_stock_unit_cost\": 2500,\n      \"zone\": \"Ground Floor\",\n      \"aisle\": \"A-02\",\n      \"rack_number\": \"R-10\",\n      \"shelf_number\": \"S-3\",\n      \"bin_location\": \"BIN-G-A2-R10\",\n      \"reorder_level\": 20,\n      \"safety_stock\": 10,\n      \"max_stock_capacity\": 500\n    },\n    {\n      \"warehouse_id\": 2,\n      \"is_primary\": false,\n      \"opening_stock\": 50,\n      \"opening_stock_unit_cost\": 2500,\n      \"zone\": \"Section B\",\n      \"aisle\": \"B-01\",\n      \"rack_number\": \"R-04\",\n      \"shelf_number\": \"S-1\",\n      \"bin_location\": \"BIN-B-A1-R04\",\n      \"reorder_level\": 10,\n      \"safety_stock\": 5,\n      \"max_stock_capacity\": 200\n    }\n  ],\n  \"is_occasion_based\": true,\n  \"occasion_ids\": [\n    1,\n    2\n  ],\n  \"attributes\": [\n    {\n      \"name\": \"Color\",\n      \"value\": \"Maroon\"\n    },\n    {\n      \"name\": \"Fabric\",\n      \"value\": \"Pure Silk\"\n    },\n    {\n      \"name\": \"Zari\",\n      \"value\": \"Gold\"\n    }\n  ],\n  \"expense_id\": 1,\n  \"expense_name\": \"Loading Charges\",\n  \"expense_amount\": 75.5,\n  \"product_type_id\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "products"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product_name\": \"Silk Traditional Saree - Premium Edition\",\n  \"selling_bill_name\": \"Kanjivaram Silk Saree Maroon Spl\",\n  \"selling_price\": 4800,\n  \"mrp\": 6499,\n  \"purchase_quantity\": 180,\n  \"lot_number\": \"LOT-2026-B\",\n  \"batch_number\": \"BATCH-995\",\n  \"manufacturing_date\": \"2026-02-01\",\n  \"expiry_date\": \"2029-02-01\",\n  \"best_before_date\": \"2028-12-31\",\n  \"brochure_url\": \"https://bugbattlers-s3.s3.ap-south-1.amazonaws.com/product-brochures/silk-saree-catalogue-v2.pdf\",\n  \"default_warehouse_id\": 1,\n  \"warehouse_allocations\": [\n    {\n      \"warehouse_id\": 1,\n      \"current_stock\": 120,\n      \"rack_number\": \"R-10\",\n      \"bin_location\": \"BIN-G-A2-R10\"\n    },\n    {\n      \"warehouse_id\": 2,\n      \"current_stock\": 60,\n      \"rack_number\": \"R-05\",\n      \"bin_location\": \"BIN-B-A2-R05\"\n    }\n  ],\n  \"status\": \"Active\",\n  \"occasion_ids\": [1, 3]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/products/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "products",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Product Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Inactive\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/products/1/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "products",
+                "1",
+                "status"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/products/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "products",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Elements Templates (Catalog View)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/products?templates_only=true&search=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "templates_only",
+                  "value": "true",
+                  "description": "Filter only root product templates (hides child variants)"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "description": "Search by product name, code, SKU"
+                }
+              ]
+            },
+            "description": "Returns top-level product templates only. Each template object includes its associated variants list, warehouse allocations, and packagings."
+          }
+        },
+        {
+          "name": "Get Product Variants Master Table",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/products?variants_only=true&search=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "variants_only",
+                  "value": "true",
+                  "description": "Filter only sellable child variants across all products"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "description": "Search by variant name, SKU, barcode"
+                }
+              ]
+            },
+            "description": "Returns a flat list of all sellable product variants. Ideal for warehouse inventory audits, barcode scanning, POS lookups, and variant price management. Each variant includes its parent template details."
+          }
+        },
+        {
+          "name": "Get Variants by Parent Template ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/products?parent_product_id=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "parent_product_id",
+                  "value": "1",
+                  "description": "Filter variants belonging to a specific parent product template ID"
+                }
+              ]
+            },
+            "description": "Returns all child variants under the specified parent template ID."
+          }
+        },
+        {
+          "name": "Create Product with Variant Matrix (Odoo Style Template)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product_name\": \"Amul Kool Flavored Milk\",\n  \"product_alias\": \"Amul Kool Milk Can\",\n  \"sku\": \"AMUL-KOOL\",\n  \"brand_id\": 1,\n  \"group_id\": 1,\n  \"short_description\": \"Refreshing flavored milk in assorted flavors and bottle sizes\",\n  \"purchase_price\": 20,\n  \"selling_price\": 25,\n  \"mrp\": 30,\n  \"currency\": \"INR\",\n  \"gst_rate\": 12,\n  \"reorder_level\": 50,\n  \"has_variants\": true,\n  \"attributes\": [\n    {\n      \"name\": \"Flavor\",\n      \"value\": \"Elaichi, Chocolate\"\n    },\n    {\n      \"name\": \"Volume\",\n      \"value\": \"200ml, 400ml\"\n    }\n  ],\n  \"variants\": [\n    {\n      \"name\": \"Amul Kool - Elaichi - 200ml\",\n      \"sku\": \"AMUL-ELA-200\",\n      \"variant_attributes\": {\n        \"Flavor\": \"Elaichi\",\n        \"Volume\": \"200ml\"\n      },\n      \"purchase_price\": 22,\n      \"selling_price\": 28,\n      \"mrp\": 30,\n      \"reorder_level\": 40,\n      \"reorder_qty\": 100,\n      \"opening_stock\": 150,\n      \"warehouse_id\": 1,\n      \"gtin_ean_upc\": \"890126201001\"\n    },\n    {\n      \"name\": \"Amul Kool - Chocolate - 200ml\",\n      \"sku\": \"AMUL-CHO-200\",\n      \"variant_attributes\": {\n        \"Flavor\": \"Chocolate\",\n        \"Volume\": \"200ml\"\n      },\n      \"purchase_price\": 25,\n      \"selling_price\": 32,\n      \"mrp\": 35,\n      \"reorder_level\": 40,\n      \"reorder_qty\": 100,\n      \"opening_stock\": 200,\n      \"warehouse_id\": 1,\n      \"gtin_ean_upc\": \"890126201002\"\n    },\n    {\n      \"name\": \"Amul Kool - Elaichi - 400ml\",\n      \"sku\": \"AMUL-ELA-400\",\n      \"variant_attributes\": {\n        \"Flavor\": \"Elaichi\",\n        \"Volume\": \"400ml\"\n      },\n      \"purchase_price\": 42,\n      \"selling_price\": 55,\n      \"mrp\": 60,\n      \"reorder_level\": 25,\n      \"reorder_qty\": 50,\n      \"opening_stock\": 80,\n      \"warehouse_id\": 1,\n      \"gtin_ean_upc\": \"890126201003\"\n    },\n    {\n      \"name\": \"Amul Kool - Chocolate - 400ml\",\n      \"sku\": \"AMUL-CHO-400\",\n      \"variant_attributes\": {\n        \"Flavor\": \"Chocolate\",\n        \"Volume\": \"400ml\"\n      },\n      \"purchase_price\": 48,\n      \"selling_price\": 62,\n      \"mrp\": 70,\n      \"reorder_level\": 25,\n      \"reorder_qty\": 50,\n      \"opening_stock\": 90,\n      \"warehouse_id\": 1,\n      \"gtin_ean_upc\": \"890126201004\"\n    }\n  ],\n  \"packagings\": [\n    {\n      \"package_name\": \"Pack of 24 (Carton)\",\n      \"quantity\": 24,\n      \"selling_price\": 670,\n      \"purchase_price\": 520,\n      \"package_barcode\": \"AMUL-KOOL-PKG24\"\n    }\n  ],\n  \"expense_id\": 1,\n  \"expense_name\": \"Loading Charges\",\n  \"expense_amount\": 75.5\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "products"
+              ]
+            },
+            "description": "Creates a master product template along with a Cartesian matrix of sellable variants, each having independent pricing (purchase_price, selling_price, mrp), attributes, and opening stock allocations."
+          }
+        },
+        {
+          "name": "Create Single Variant (Under Existing Template)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"parent_product_id\": 1,\n  \"product_name\": \"Amul Kool - Badam - 200ml\",\n  \"sku\": \"AMUL-BAD-200\",\n  \"variant_attributes\": {\n    \"Flavor\": \"Badam\",\n    \"Volume\": \"200ml\"\n  },\n  \"purchase_price\": 24,\n  \"selling_price\": 30,\n  \"mrp\": 32,\n  \"reorder_level\": 30,\n  \"reorder_qty\": 60,\n  \"opening_stock\": 100,\n  \"warehouse_id\": 1,\n  \"packagings\": [\n    {\n      \"package_name\": \"Pack of 24 (Carton)\",\n      \"quantity\": 24,\n      \"selling_price\": 720,\n      \"purchase_price\": 570,\n      \"package_barcode\": \"AMUL-BAD-200-PKG24\"\n    }\n  ],\n  \"expense_id\": 1,\n  \"expense_name\": \"Loading Charges\",\n  \"expense_amount\": 75.5\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "products"
+              ]
+            },
+            "description": "Creates an individual ad-hoc child variant linked to an existing parent template ID. Category, Brand, Tax Rate, and Currency are inherited automatically if omitted."
+          }
+        },
+        {
+          "name": "Update Variant Price & Details",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"purchase_price\": 24.5,\n  \"selling_price\": 30,\n  \"mrp\": 34,\n  \"reorder_level\": 50,\n  \"reorder_qty\": 120,\n  \"expense_id\": 1,\n  \"expense_name\": \"Loading Charges\",\n  \"expense_amount\": 75.5\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/products/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "products",
+                "1"
+              ]
+            },
+            "description": "Updates variant-specific purchase price, selling price, and MRP without affecting the parent template or sibling variants."
+          }
+        },
+        {
+          "name": "Add Product Packaging / Multi-Pack Rule",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"package_name\": \"Pack of 24 (Carton)\",\n  \"quantity\": 24,\n  \"selling_price\": 670,\n  \"purchase_price\": 520,\n  \"package_barcode\": \"AMUL-ELA-200-PKG24\",\n  \"expense_id\": 1,\n  \"expense_name\": \"Loading Charges\",\n  \"expense_amount\": 75.5\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/products/1/packagings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "products",
+                "1",
+                "packagings"
+              ]
+            },
+            "description": "Links a multi-pack or carton rule (e.g., Case of 24) to a product or variant. Scanning the package barcode or QR adjusts inventory by the specified quantity."
+          }
+        },
+        {
+          "name": "Get Product Packaging Rules",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/products/1/packagings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "products",
+                "1",
+                "packagings"
+              ]
+            },
+            "description": "Retrieves all packaging rules (boxes, packs, cartons) configured for a given product or variant."
+          }
+        },
+        {
+          "name": "Delete Product Packaging Rule",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/packagings/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "packagings",
+                "1"
+              ]
+            },
+            "description": "Deletes a specific packaging rule by its packaging ID."
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Companies",
+      "item": [
+        {
+          "name": "Get Companies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/companies",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "companies"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Company By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/companies/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "companies",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Company",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Apex Industries Ltd\",\n  \"description\": \"Parent manufacturing enterprise for textile lines\",\n  \"scheme\": \"Diwali Bulk Scheme 10+1\",\n  \"offer\": \"5% Early Payment Discount\",\n  \"margin\": \"18% Margin\",\n  \"authorized_distributor\": \"National Wholesale Corp\",\n  \"company_officer_name\": \"Rajesh Sharma\",\n  \"status\": \"Active\",\n  \"officers\": [\n    {\n      \"name\": \"Ramesh Patel\",\n      \"designation\": \"Zonal Sales Officer\",\n      \"phone\": \"9876543210\",\n      \"email\": \"ramesh@company.com\",\n      \"is_primary\": true\n    },\n    {\n      \"name\": \"Priya Sharma\",\n      \"designation\": \"Billing / Accounts Officer\",\n      \"phone\": \"9811223344\",\n      \"email\": \"priya@company.com\",\n      \"is_primary\": false\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/companies",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "companies"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Company",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Apex Global Industries Ltd\",\n  \"scheme\": \"Festival Scheme 12+1\",\n  \"offer\": \"7% Cash Discount\",\n  \"margin\": \"20% Margin\",\n  \"authorized_distributor\": \"Metropolitan Distributors\",\n  \"company_officer_name\": \"Rajesh Sharma (Sr. VP)\",\n  \"status\": \"Active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/companies/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "companies",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Company",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/companies/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "companies",
+                "1"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Brands",
+      "item": [
+        {
+          "name": "Get Brands",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/brands",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "brands"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Brand",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Vastra Elite\",\n  \"company_name\": \"Apex Industries Ltd\",\n  \"description\": \"Luxury ethnic wear label\",\n  \"scheme\": \"Seasonal 5+1 Free Box\",\n  \"offer\": \"Free Display Stand on 50 Units\",\n  \"margin\": \"25% Net Margin\",\n  \"authorized_distributor\": \"Apex Regional Logistics\",\n  \"company_officer_name\": \"Anita Verma\",\n  \"status\": \"Active\",\n  \"officers\": [\n    {\n      \"name\": \"Vikram Singh\",\n      \"designation\": \"Brand Coordinator\",\n      \"phone\": \"9822334455\",\n      \"email\": \"vikram@brand.com\",\n      \"is_primary\": true\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/brands",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "brands"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Brand",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Vastra Elite Royal\",\n  \"company_name\": \"Apex Global Industries Ltd\",\n  \"scheme\": \"Quarterly Tier-1 Incentive\",\n  \"offer\": \"Buy 100 get 12 free\",\n  \"margin\": \"28% Net Margin\",\n  \"authorized_distributor\": \"State Wholesale Supply\",\n  \"company_officer_name\": \"Anita Verma\",\n  \"status\": \"Active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/brands/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "brands",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Brand Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Inactive\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/brands/1/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "brands",
+                "1",
+                "status"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Brand",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/brands/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "brands",
+                "1"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Groups (Categories Tree)",
+      "item": [
+        {
+          "name": "Get Group Tree (Hierarchy)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/groups/tree",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "groups",
+                "tree"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Groups Flat List",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/groups",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "groups"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Group",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Ethnic Wear\",\n  \"description\": \"Traditional garments and clothing\",\n  \"status\": \"Active\",\n  \"parent_id\": null\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/groups",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "groups"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Group",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Traditional Ethnic Wear\",\n  \"description\": \"Updated description\",\n  \"status\": \"Active\",\n  \"parent_id\": null\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/groups/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "groups",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Group",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/groups/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "groups",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Group By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/groups/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "groups",
+                "1"
+              ]
+            },
+            "description": "Retrieves details of a specific category group by ID."
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Occasions Master",
+      "item": [
+        {
+          "name": "Get Occasion Types",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/occasions/types",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "occasions",
+                "types"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Occasions (with Filters)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/occasions?occasion_type=Festival&status=Active&search=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "occasions"
+              ],
+              "query": [
+                {
+                  "key": "occasion_type",
+                  "value": "Festival"
+                },
+                {
+                  "key": "status",
+                  "value": "Active"
+                },
+                {
+                  "key": "search",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Occasion By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/occasions/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "occasions",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Occasion",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"occasion_type\": \"Festival\",\n  \"occasion_name\": \"Diwali Special\",\n  \"description\": \"Festival of lights celebration collections\",\n  \"start_date\": \"2026-10-20\",\n  \"end_date\": \"2026-11-05\",\n  \"status\": \"Active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/occasions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "occasions"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Occasion",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"occasion_type\": \"Festival\",\n  \"occasion_name\": \"Diwali Grand Festive\",\n  \"description\": \"Updated description\",\n  \"start_date\": \"2026-10-18\",\n  \"end_date\": \"2026-11-08\",\n  \"status\": \"Active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/occasions/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "occasions",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Occasion",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/occasions/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "occasions",
+                "1"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Attributes Master",
+      "item": [
+        {
+          "name": "Get Attributes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/attributes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "attributes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Attribute",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Fabric\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/attributes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "attributes"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. Media / S3 Uploads",
+      "item": [
+        {
+          "name": "Upload Single Image",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": ""
+                },
+                {
+                  "key": "folder",
+                  "value": "products",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/upload/image",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "upload",
+                "image"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Upload Multiple Images",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "folder",
+                  "value": "products",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/upload/images",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "upload",
+                "images"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Upload Single Video",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "video",
+                  "type": "file",
+                  "src": ""
+                },
+                {
+                  "key": "folder",
+                  "value": "product-videos",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/upload/video",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "upload",
+                "video"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Upload Document (PDF / DOC)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "document",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/upload/document",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "upload",
+                "document"
+              ]
+            },
+            "description": "Uploads a document or brochure file to S3 and returns the public CDN URL."
+          }
+        }
+      ]
+    },
+    {
+      "name": "10. Admin Dashboard",
+      "item": [
+        {
+          "name": "Get Dashboard Metrics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/dashboard",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "dashboard"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "11. Purchase Orders (PO)",
+      "item": [
+        {
+          "name": "Get Purchase Orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/purchases?search=&supplier_id=&shipping_status=&pmt_status=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "purchases"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": ""
+                },
+                {
+                  "key": "supplier_id",
+                  "value": ""
+                },
+                {
+                  "key": "shipping_status",
+                  "value": ""
+                },
+                {
+                  "key": "pmt_status",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Purchase Order By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/purchases/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "purchases",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Purchase Order (PO)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"supplier_id\": 1,\n  \"date\": \"2026-10-12\",\n  \"bill_num\": \"BILL-2026-001\",\n  \"pmt_status\": \"Pending\",\n  \"shipping_status\": \"Ordered\",\n  \"total_paid\": 0,\n  \"items\": [\n    {\n      \"product_id\": 1,\n      \"qty\": 50,\n      \"price\": 2500,\n      \"lot_number\": \"LOT-2026-OCT\",\n      \"batch_number\": \"BATCH-101\",\n      \"manufacturing_date\": \"2026-09-01\",\n      \"expiry_date\": \"2029-09-01\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/purchases",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "purchases"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Receive Stock for PO (Increments Inventory)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"product_id\": 1,\n      \"received_qty\": 50,\n      \"lot_number\": \"LOT-2026-OCT\",\n      \"batch_number\": \"BATCH-101\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/purchases/1/receive",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "purchases",
+                "1",
+                "receive"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update PO Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pmt_status\": \"Paid\",\n  \"total_paid\": 125000\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/purchases/1/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "purchases",
+                "1",
+                "status"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Purchase Order",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/purchases/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "purchases",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Suppliers (Active Companies)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/suppliers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "suppliers"
+              ]
+            },
+            "description": "Fetches all active supplier companies for PO dropdowns."
+          }
+        }
+      ]
+    },
+    {
+      "name": "12. Sales Orders (SO)",
+      "item": [
+        {
+          "name": "Get Sales Orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/sales?search=&customer_id=&status=&payment_status=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "sales"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": ""
+                },
+                {
+                  "key": "customer_id",
+                  "value": ""
+                },
+                {
+                  "key": "status",
+                  "value": ""
+                },
+                {
+                  "key": "payment_status",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Sales Order By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/sales/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "sales",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Sales Order (Deducts Inventory)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": 1,\n  \"date\": \"2026-10-12\",\n  \"status\": \"Confirmed\",\n  \"payment_status\": \"Pending\",\n  \"payment_mode\": \"Cash\",\n  \"items\": [\n    {\n      \"product_id\": 1,\n      \"qty\": 5,\n      \"price\": 4500,\n      \"tax_rate\": 5\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/sales",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "sales"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Sales Order Status (Cancel Restores Inventory)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Cancelled\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/sales/1/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "sales",
+                "1",
+                "status"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Sales Order",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/sales/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "sales",
+                "1"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "13. Customers",
+      "item": [
+        {
+          "name": "Get Customers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/customers?search=&status=&customer_type=&state=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "customers"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": ""
+                },
+                {
+                  "key": "status",
+                  "value": ""
+                },
+                {
+                  "key": "customer_type",
+                  "value": ""
+                },
+                {
+                  "key": "state",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Manoj Textiles & Boutique\",\n  \"contact_person\": \"Manoj Agrawal\",\n  \"mobile_number\": \"9876543210\",\n  \"email\": \"manoj@boutique.com\",\n  \"customer_type\": \"Wholesaler\",\n  \"company_name\": \"Agrawal Enterprises\",\n  \"gstin\": \"27AAAAA0000A1Z5\",\n  \"billing_address\": \"Shop 42, Market Road\",\n  \"billing_city\": \"Mumbai\",\n  \"billing_state\": \"Maharashtra\",\n  \"status\": \"Active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/customers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "customers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Customer By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/customers/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "customers",
+                "1"
+              ]
+            },
+            "description": "Fetches complete customer profile, billing address, and GSTIN details."
+          }
+        },
+        {
+          "name": "Update Customer",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Rajesh Kumar Sharma\",\n  \"company_name\": \"RKS Textiles Pvt Ltd\",\n  \"mobile_number\": \"9876543210\",\n  \"email\": \"rajesh@rkstextiles.com\",\n  \"credit_limit\": 100000,\n  \"status\": \"Active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/customers/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "customers",
+                "1"
+              ]
+            },
+            "description": "Updates an existing customer record."
+          }
+        },
+        {
+          "name": "Delete Customer",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/customers/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "customers",
+                "1"
+              ]
+            },
+            "description": "Deletes a customer from the database."
+          }
+        }
+      ]
+    },
+    {
+      "name": "14. S3 Media & Document Uploads",
+      "item": [
+        {
+          "name": "Upload Product Brochure (PDF / Document)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "brochure",
+                  "type": "file",
+                  "description": "Select a PDF, DOC, or DOCX brochure file (up to 30MB)"
+                },
+                {
+                  "key": "folder",
+                  "value": "product-brochures",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/upload/brochure",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "upload",
+                "brochure"
+              ]
+            },
+            "description": "Uploads product brochure / catalogue to AWS S3 and returns the public brochure URL."
+          }
+        },
+        {
+          "name": "Upload Single Image",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "description": "Select an image file (JPEG, PNG, WEBP, etc.)"
+                },
+                {
+                  "key": "folder",
+                  "value": "products",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/upload/image",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "upload",
+                "image"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Upload Multiple Images",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "images",
+                  "type": "file",
+                  "description": "Select up to 10 image files"
+                },
+                {
+                  "key": "folder",
+                  "value": "products",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/upload/images",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "upload",
+                "images"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Upload Product Video",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "video",
+                  "type": "file",
+                  "description": "Select video file (MP4, WEBM, MOV, etc. up to 50MB)"
+                },
+                {
+                  "key": "folder",
+                  "value": "product-videos",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/upload/video",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "upload",
+                "video"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "15. Warehouses",
+      "item": [
+        {
+          "name": "Get Warehouses (with filters)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/warehouses?search=&status=Active&city=&warehouse_type=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "warehouses"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": ""
+                },
+                {
+                  "key": "status",
+                  "value": "Active"
+                },
+                {
+                  "key": "city",
+                  "value": ""
+                },
+                {
+                  "key": "warehouse_type",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Warehouse By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/warehouses/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "warehouses",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Warehouse Stock Inventory",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/warehouses/1/stock",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "warehouses",
+                "1",
+                "stock"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Warehouse",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"warehouse_code\": \"WH-AHMEDABAD-003\",\n  \"name\": \"Ahmedabad Distribution Hub\",\n  \"warehouse_type\": \"Regional Hub\",\n  \"address_line_1\": \"Sarkhej-Sanand Industrial Corridor\",\n  \"address_line_2\": \"Phase 2, Block 12\",\n  \"city\": \"Ahmedabad\",\n  \"state\": \"Gujarat\",\n  \"country\": \"India\",\n  \"pincode\": \"382210\",\n  \"contact_person\": \"Vikram Solanki\",\n  \"phone_number\": \"+91 9876543212\",\n  \"email\": \"ahmedabad.hub@inventory.com\",\n  \"total_capacity\": \"35,000 Sq. Ft.\",\n  \"is_default\": false,\n  \"status\": \"Active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/warehouses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "warehouses"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Warehouse",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Ahmedabad Primary Logistics Hub\",\n  \"contact_person\": \"Vikram Solanki (Senior Manager)\",\n  \"total_capacity\": \"40,000 Sq. Ft.\",\n  \"status\": \"Active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/warehouses/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "warehouses",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Warehouse",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/warehouses/3",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "warehouses",
+                "3"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "16. Inventory & Stock Management",
+      "item": [
+        {
+          "name": "Get Inventory Overview (Multi-Warehouse)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/inventory?search=&status=&warehouse_id=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "inventory"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "",
+                  "description": "Search by product name or SKU"
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "description": "Filter by stock status (NORMAL, LOW_STOCK, CRITICAL_STOCK, REORDER_REQUIRED)"
+                },
+                {
+                  "key": "warehouse_id",
+                  "value": "",
+                  "description": "Filter stock by specific warehouse ID"
+                }
+              ]
+            },
+            "description": "Fetches real-time stock balances across all products and warehouses, with average daily sales velocity and reorder level indicators."
+          }
+        },
+        {
+          "name": "Get Low Stock & Critical Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/inventory/low-stock",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "inventory",
+                "low-stock"
+              ]
+            },
+            "description": "Returns items categorized into Critical Stock, Low Stock, and Normal Stock."
+          }
+        },
+        {
+          "name": "Get Reorder Required Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/inventory/reorder-products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "inventory",
+                "reorder-products"
+              ]
+            },
+            "description": "Returns only products that have reached or breached their reorder threshold."
+          }
+        },
+        {
+          "name": "Get Reorder Stock Alerts / Notifications",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/inventory/reorder-alerts?status=Unread",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "inventory",
+                "reorder-alerts"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "Unread",
+                  "description": "Filter Unread or Read notifications"
+                }
+              ]
+            },
+            "description": "Returns stock alert notifications triggered by the automated inventory engine."
+          }
+        },
+        {
+          "name": "Mark Reorder Alert Read",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/inventory/reorder-alerts/1/read",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "inventory",
+                "reorder-alerts",
+                "1",
+                "read"
+              ]
+            },
+            "description": "Marks a specific reorder notification alert as read."
+          }
+        },
+        {
+          "name": "Simulate Live Reorder Calculation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product_id\": 1,\n  \"warehouse_id\": 1,\n  \"lead_time_days\": 7,\n  \"safety_stock\": 20,\n  \"max_stock_level\": 200\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/inventory/calculate-reorder",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "inventory",
+                "calculate-reorder"
+              ]
+            },
+            "description": "Simulates and calculates ROL (Reorder Level), ROQ (Reorder Quantity), and 30-day daily sales velocity for any product."
+          }
+        },
+        {
+          "name": "Adjust Warehouse Stock (In / Out / Damage / Loss)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"warehouse_id\": 1,\n  \"product_id\": 1,\n  \"quantity\": 25,\n  \"movement_type\": \"ADJUSTMENT_IN\",\n  \"notes\": \"Physical stock audit count correction\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/inventory/adjust",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "inventory",
+                "adjust"
+              ]
+            },
+            "description": "Adjusts inventory stock up or down. Movement types: OPENING_STOCK, ADJUSTMENT_IN, ADJUSTMENT_OUT, DAMAGE, LOSS."
+          }
+        }
+      ]
+    },
+    {
+      "name": "17. Purchase Requests (Reorder Engine Drafts)",
+      "item": [
+        {
+          "name": "Get Purchase Requests",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/purchase-requests?status=&warehouse_id=&supplier_id=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "purchase-requests"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "",
+                  "description": "Filter by status: Draft, Converted_to_PO, Cancelled"
+                },
+                {
+                  "key": "warehouse_id",
+                  "value": "",
+                  "description": "Filter by warehouse ID"
+                },
+                {
+                  "key": "supplier_id",
+                  "value": "",
+                  "description": "Filter by supplier company ID"
+                }
+              ]
+            },
+            "description": "Lists draft purchase requests generated by the low-stock reorder engine or warehouse supervisors."
+          }
+        },
+        {
+          "name": "Get Purchase Request By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/purchase-requests/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "purchase-requests",
+                "1"
+              ]
+            },
+            "description": "Retrieves complete details of a purchase request and its line items."
+          }
+        },
+        {
+          "name": "Create Purchase Request from Low Stock Reorder",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"warehouse_id\": 1,\n  \"supplier_id\": 1,\n  \"priority\": \"High\",\n  \"notes\": \"Automated replenishment for low stock items\",\n  \"items\": [\n    {\n      \"product_id\": 1,\n      \"required_qty\": 150,\n      \"notes\": \"Stock below safety threshold\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/purchase-requests/create-from-reorder",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "purchase-requests",
+                "create-from-reorder"
+              ]
+            },
+            "description": "Generates a draft purchase request containing recommended replenishment quantities."
+          }
+        },
+        {
+          "name": "Convert Purchase Request to Official PO",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"supplier_id\": 1,\n  \"expected_delivery_date\": \"2026-11-01\",\n  \"notes\": \"Approved purchase request converted into official vendor PO\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/purchase-requests/1/convert-to-po",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "purchase-requests",
+                "1",
+                "convert-to-po"
+              ]
+            },
+            "description": "Converts an approved draft purchase request into a formal Purchase Order and updates the PR status."
+          }
+        }
+      ]
+    },
+    {
+      "name": "18. Officers (Company & Brand Contacts)",
+      "item": [
+        {
+          "name": "Add Officer to Company or Brand",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Amit Joshi\",\n  \"designation\": \"Logistics Manager\",\n  \"phone\": \"9833445566\",\n  \"email\": \"amit@logistics.com\",\n  \"is_primary\": false,\n  \"company_id\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/officers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "officers"
+              ]
+            },
+            "description": "Creates an officer contact linked to a company_id or brand_id."
+          }
+        },
+        {
+          "name": "Update Officer Details",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Amit Joshi\",\n  \"designation\": \"Senior Logistics Officer\",\n  \"phone\": \"9833445577\",\n  \"is_primary\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/officers/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "officers",
+                "1"
+              ]
+            },
+            "description": "Updates an officer's designation, phone, or primary status."
+          }
+        },
+        {
+          "name": "Delete Officer",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/officers/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "officers",
+                "1"
+              ]
+            },
+            "description": "Deletes an officer record."
+          }
+        }
+      ]
+    },
+    {
+      "name": "19. Employee Activity & Audit Logs",
+      "item": [
+        {
+          "name": "Get Activity Logs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/activity-logs?page=1&limit=20&search=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "activity-logs"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "search",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Activity Log By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/activity-logs/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "activity-logs",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Product Activity Logs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/products/1/activity-logs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "products",
+                "1",
+                "activity-logs"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "20. Expense Master (Dropdown Types)",
+      "item": [
+        {
+          "name": "Get Expenses",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/expenses?search=&status=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "expenses"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": ""
+                },
+                {
+                  "key": "status",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Expense By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/expenses/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "expenses",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Expense",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Loading Charges\",\n  \"description\": \"Labour charges for loading goods onto delivery truck\",\n  \"status\": \"Active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/expenses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "expenses"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Expense",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Loading Charges (Updated)\",\n  \"description\": \"Updated loading charges description\",\n  \"status\": \"Active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/expenses/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "expenses",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Expense Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Inactive\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/expenses/1/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "expenses",
+                "1",
+                "status"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Expense",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/expenses/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "expenses",
+                "1"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "21. Product Type Master (Dropdown Types)",
+      "item": [
+        {
+          "name": "Get Product Types",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/product-types?search=&status=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "product-types"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": ""
+                },
+                {
+                  "key": "status",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Product Type By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/product-types/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "product-types",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Product Type",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Consumable\",\n  \"description\": \"Internal supplies or packaging consumed during operations\",\n  \"status\": \"Active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/product-types",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "product-types"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Product Type",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Consumable Supplies\",\n  \"description\": \"Updated description for consumable supplies\",\n  \"status\": \"Active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/product-types/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "product-types",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Product Type Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Inactive\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/product-types/1/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "product-types",
+                "1",
+                "status"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Product Type",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/product-types/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "product-types",
+                "1"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "22. Alias Master (Dropdown Types)",
+      "item": [
+        {
+          "name": "Get Alias Types",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/aliases?search=&status=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "aliases"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": ""
+                },
+                {
+                  "key": "status",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Alias Type By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/aliases/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "aliases",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Alias Type",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Botanical Name\",\n  \"description\": \"Botanical or biological nomenclature for agricultural products\",\n  \"status\": \"Active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/aliases",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "aliases"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Alias Type",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Botanical / Biological Name\",\n  \"description\": \"Updated botanical classification description\",\n  \"status\": \"Active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/aliases/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "aliases",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Alias Type Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Inactive\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/aliases/1/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "aliases",
+                "1",
+                "status"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Alias Type",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/aliases/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "aliases",
+                "1"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

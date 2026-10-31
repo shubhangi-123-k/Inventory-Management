@@ -1,0 +1,62 @@
+# ==========================================
+# 1. NODE MODULES & DEPENDENCIES (Never Push)
+# ==========================================
+node_modules/
+node_modules
+**/node_modules/
+**/node_modules/**
+.pnp
+.pnp.js
+
+# ==========================================
+# 2. ENVIRONMENT VARIABLES & SECRETS (Never Push)
+# ==========================================
+.env
+.env.*
+*.env
+*.env.*
+**/.env
+**/.env.*
+**/*.env
+**/*.env.*
+!.env.example
+!**/.env.example
+
+# ==========================================
+# 3. PRODUCTION BUILDS
+# ==========================================
+dist/
+dist
+dist-ssr/
+build/
+*.local
+
+# ==========================================
+# 4. LOGS & DEBUGGING
+# ==========================================
+logs/
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ==========================================
+# 5. TEST & COVERAGE
+# ==========================================
+coverage/
+
+# ==========================================
+# 6. OS & IDE FILES
+# ==========================================
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
